@@ -1,0 +1,20 @@
+name: Spam
+description: Spam messages
+author: StarTux
+version: 0.1
+api-version: 1.13
+website: http://cavetale.com
+main: com.cavetale.spam.SpamPlugin
+depend: [ ]
+softdepend: []
+commands:
+  spam:
+    aliases: []
+    description: spam
+    permission: spam.spam
+    usage: |-
+      Usage: /spam
+permissions:
+  spam.spam:
+    description: use /spam
+    default: op

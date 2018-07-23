@@ -1,0 +1,18 @@
+website:
+  Message: '&eClick here to check out our website, &9https://cavetale.com&e.'
+  URL: 'https://cavetale.com'
+discord:
+  Message: '&eClick here to join us on Discord.'
+  URL: 'https://discord.gg/6KQRa2v'
+serverinfo:
+  Message: '&eThis is a temporary server until the main server can update to 1.13.'
+  Color: yellow
+home:
+  Message: '&eWarp to your bed spawn via /home.'
+  Command: '/home '
+spawn:
+  Message: '&eVisit spawn via /spawn.'
+  Command: '/spawn '
+tpa:
+  Message: '&eTeleport to your friends via /tpa.'
+  Command: '/tpa'
