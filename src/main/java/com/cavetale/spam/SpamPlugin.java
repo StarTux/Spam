@@ -1,18 +1,21 @@
 package com.cavetale.spam;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scheduler.BukkitRunnable;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
-import org.json.simple.JSONValue;
-import org.bukkit.entity.Player;
-import org.bukkit.ChatColor;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONValue;
 
-public final class SpamPlugin extends JavaPlugin {
+public final class SpamPlugin extends JavaPlugin implements Listener {
     Random random = new Random(System.currentTimeMillis());
 
     @Override
@@ -24,16 +27,21 @@ public final class SpamPlugin extends JavaPlugin {
             public void run() {
                 spam();
             }
-        }.runTaskTimer(this, 0, 20*60*10);
+        }.runTaskTimer(this, 20*60*5, 20*60*10);
+        for (Player player: getServer().getOnlinePlayers()) {
+            setupPlayerList(player);
+        }
+        getServer().getPluginManager().registerEvents(this, this);
     }
 
     void spam() {
         reloadConfig();
-        List<String> keys = new ArrayList<>(getConfig().getKeys(false));
+        ConfigurationSection section = getConfig().getConfigurationSection("messages");
+        List<String> keys = new ArrayList<>(section.getKeys(false));
         if (keys.isEmpty()) return;
         String key = keys.get(random.nextInt(keys.size()));
         getLogger().info("Announcing " + key + "...");
-        ConfigurationSection conf = getConfig().getConfigurationSection(key);
+        ConfigurationSection conf = section.getConfigurationSection(key);
         String msg = ChatColor.translateAlternateColorCodes('&', conf.getString("Message"));
         String cmd = conf.getString("Command");
         String url = conf.getString("URL");
@@ -63,5 +71,17 @@ public final class SpamPlugin extends JavaPlugin {
         for (Player player: getServer().getOnlinePlayers()) {
             getServer().dispatchCommand(getServer().getConsoleSender(), String.format(c, player.getName()));
         }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        setupPlayerList(event.getPlayer());
+    }
+
+    void setupPlayerList(Player player) {
+        String header = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Header"));
+        String footer = ChatColor.translateAlternateColorCodes('&', getConfig().getString("Footer"));
+        player.setPlayerListHeader(header);
+        player.setPlayerListFooter(footer);
     }
 }
